@@ -141,6 +141,11 @@ class CustomGroupChatManager(autogen.GroupChatManager):
             raise
 
         logging.info(f"CustomGroupChatManager: agent.a_initiate_chat() with name {agent.name} and receiptient {recipient} completed")
+        def delayed_initiate_chat(self, agent, manager, message):
+            print(f"Agent: {agent}, Message: {message}")  # ✅ Debugging
+            if agent:
+                agent.a_send(message, recipient=None, request_reply=False)
+
 
     @property
     def chat_interface(self) ->  pn.chat.ChatInterface:

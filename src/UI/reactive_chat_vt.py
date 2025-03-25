@@ -48,8 +48,10 @@ class ReactiveChat(param.Parameterized):
 
     ########## tab1: Learn Interface
     async def a_learn_tab_callback(self, contents: str, user: str, instance: pn.chat.ChatInterface):
-        """Handles chat input for the learn tab."""
+        print(f"Received input: {contents} from {user}")  # ✅ Debugging
+
         self.groupchat_manager.chat_interface = instance
+        print(f"Current chat interface: {self.groupchat_manager.chat_interface.name}")  # ✅ Debugging
         if not globals.initiate_chat_task_created:
             asyncio.create_task(self.groupchat_manager.delayed_initiate_chat(
                 self.agents_dict[AgentKeys.TUTOR.value], 
@@ -57,20 +59,27 @@ class ReactiveChat(param.Parameterized):
                 contents
             ))  
         else:
-            if globals.input_future and not globals.input_future.done():                
-                globals.input_future.set_result(contents)                 
+            if globals.input_future and not globals.input_future.done():
+                print(f"Setting input_future with: {contents}")  # ✅ Debugging
+                globals.input_future.set_result(contents)
             else:
-                print("No input being awaited.")
+                print("No input being awaited.") # ✅ Debugging
     
     def update_learn_tab(self, recipient, messages, sender, config):
         """Updates the learn tab chat interface."""
         if self.groupchat_manager.chat_interface.name is not self.LEARN_TAB_NAME: 
             return
+        if not messages:
+            print("No messages to update.")  # ✅ Debugging
+            return
+        
         last_content = messages[-1]['content']
+        print(f"Updating learn tab with message: {last_content}")  # ✅ Debugging
         user_name = messages[-1].get('name', recipient.name)
         avatar_icon = self.avatars.get(user_name, None)
 
         self.learn_tab_interface.send(last_content, user=user_name, avatar=avatar_icon, respond=False)
+        print(f"Updating learn tab with message: {messages[-1]['content']}")  # ✅ Debugging
     
     def update_dashboard(self):
         """Fetch the latest career pathway updates and display student progress."""
@@ -145,11 +154,22 @@ class ReactiveChat(param.Parameterized):
         self.model_tab_interface.send(response, user=self.agents_dict[AgentKeys.JOB_FINDER.value].name, avatar=self.avatars[self.agents_dict[AgentKeys.JOB_FINDER.value].name])
 
     async def a_model_tab_callback(self, contents: str, user: str, instance: pn.chat.ChatInterface):
-        """Handles chat input for the model tab."""
+
         self.groupchat_manager.chat_interface = instance
         if user in ["System", "User"]:
-            response = self.agents_dict[AgentKeys.LEARNER_MODEL.value].last_message(agent=self.agents_dict[AgentKeys.LEARNER_MODEL.value])["content"]
-            self.learn_tab_interface.send(response, user=self.agents_dict[AgentKeys.LEARNER_MODEL.value].name, avatar=self.avatars[self.agents_dict[AgentKeys.LEARNER_MODEL.value].name])
+            try:
+                response = self.agents_dict[AgentKeys.LEARNER_MODEL.value].last_message(
+                    agent=self.agents_dict[AgentKeys.LEARNER_MODEL.value]
+                    )["content"]
+            except KeyError:
+                response = "No history available for this agent."
+            
+            self.learn_tab_interface.send(
+                response, 
+                user=self.agents_dict[AgentKeys.LEARNER_MODEL.value].name, 
+                avatar=self.avatars.get(self.agents_dict[AgentKeys.LEARNER_MODEL.value].name)
+            )
+
     
     ########## Create the UI Tabs
     def draw_view(self):         

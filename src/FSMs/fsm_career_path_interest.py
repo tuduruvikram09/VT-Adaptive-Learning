@@ -80,7 +80,8 @@ agents_dict = {
 # Finite State Machine (FSM) for managing career path transitions
 class CareerFSM:
     states = ["start", "survey", "data_retrieval", "analysis", "career_matching", 
-              "refinement", "visualization", "final"]
+              "refinement", "visualization", "final","student_interaction", "career_guidance", "cert_recommendation", 
+              "job_search"]
 
     def __init__(self, agents_dict):
         self.machine = Machine(model=self, states=CareerFSM.states, initial="start")
@@ -93,6 +94,11 @@ class CareerFSM:
         self.machine.add_transition("refine", "career_matching", "refinement")
         self.machine.add_transition("visualize", "refinement", "visualization")
         self.machine.add_transition("complete", "visualization", "final")
+        self.machine.add_transition("begin_interaction", "start", "student_interaction")
+        self.machine.add_transition("guide", "student_interaction", "career_guidance")
+        self.machine.add_transition("recommend_certifications", "career_guidance", "cert_recommendation")
+        self.machine.add_transition("find_jobs", "cert_recommendation", "job_search")
+        self.machine.add_transition("complete", "job_search", "final")
 
         self.agents_dict = agents_dict
         self.current_speaker_index = 0
@@ -100,9 +106,32 @@ class CareerFSM:
 
     def next_speaker_selector(self):
         """Selects the next agent in the conversation cycle."""
+        print(f"Current speaker cycle: {self.agent_names}")  # ✅ Debugging
         next_speaker = self.agent_names[self.current_speaker_index]
         self.current_speaker_index = (self.current_speaker_index + 1) % len(self.agent_names)
         return self.agents_dict[next_speaker]
+
+
+    def register_groupchat_manager(self, manager):
+        """Assigns the group chat manager to FSM."""
+        self.groupchat_manager = manager
+
+    # ✅ Add the transition methods here:
+    def begin_interaction(self):
+        print(f"Transitioning state from {self.state} to student_interaction")  # ✅ Debugging
+        self.machine.set_state("student_interaction")
+
+    def guide(self):
+        print(f"Transitioning state from {self.state} to career_guidance")  # ✅ Debugging
+        self.machine.set_state("career_guidance")
+
+    def recommend_certifications(self):
+        print(f"Transitioning state from {self.state} to cert_recommendation")  # ✅ Debugging
+        self.machine.set_state("cert_recommendation")
+
+    def find_jobs(self):
+        print(f"Transitioning state from {self.state} to job_search")  # ✅ Debugging
+        self.machine.set_state("job_search")
 
 # Initialize FSM
 fsm = CareerFSM(agents_dict)
@@ -214,4 +243,3 @@ manager.get_chat_history_and_initialize_chat(chat_interface=reactive_chat_career
 
 # Update the UI dashboard
 reactive_chat_career.update_dashboard()
-

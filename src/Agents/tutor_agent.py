@@ -20,6 +20,16 @@ class TutorAgent(MyConversableAgent):
             TutorAgent always calls on TeacherAgent for learning new topics.
             Your goal is to ensure a cohesive and effective learning experience by coordinating various aspects of the educational process.
             """
+    def __init__(self, llm_config):
+        super().__init__(llm_config=llm_config)
+        self.name = "TutorAgent"
+        
+    async def a_send(self, message, recipient=None, request_reply=False):
+        print(f"TutorAgent processing message: {message}")  # ✅ Debugging
+        response = f"Tutor response: {message}"
+        print(f"TutorAgent response: {response}")  # ✅ Debugging
+        return response
+
     def __init__(self, **kwargs):
         super().__init__(
                 name="TutorAgent",
@@ -28,6 +38,7 @@ class TutorAgent(MyConversableAgent):
                 description=kwargs.pop('description',self.description),
                 **kwargs
             )
+        
     
     def request_recommendations(self, goal_name: str, completion_percentage: float) -> Dict[str, str]:
         # Example recommendation logic
@@ -37,3 +48,5 @@ class TutorAgent(MyConversableAgent):
             return {"recommendation": "Focus on practice problems related to your current goal."}
         else:
             return {"recommendation": "Review basic concepts and seek additional help on weak areas."}
+        
+    
