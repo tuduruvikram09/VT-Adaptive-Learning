@@ -1,27 +1,38 @@
 
 
-# Introduction Multi-Agent Adaptive Learning
+# Introduction Adaptive Learning Career Path Recommendation System
 
-This code is from Rivier University's Professional Seminar class (COMP-699) from the Summer of 2024.
+This project creates an adaptable learning platform that recommends career paths based on student responses and developing interests.
+It includes an FSM (Finite State Machine) to control discussion flow, a multi-agent system for dynamic analysis, and a Panel-based UI for student involvement.
 
-It uses [Microsoft's autogen](https://microsoft.github.io/autogen/docs/Getting-Started/) to specialize an agent for each function of an adaptive learning system. The model used is OpenAI's ChatGPT-4o.
+My Contributions:
 
-It uses [panel](https://panel.holoviz.org/) for the chat interface. It opens in a web browser.
+Developed the full CareerFSM in fsm_career_path_interest.py.
 
-There is [a paper published by the Rivier Academic Journal](https://www2.rivier.edu/journal/ROAJ-Summer-2024/J1324_Glossner%20et%20al_2024.pdf) describing the system. 
+Designed and implemented the Panel UI with agent interactions in panel_gui_tabs_vt.py.
 
-Dokku, S., Gumpula, A., Gudati, S., Nagisetty, M., Thimmarayappa, R., Yeruva, J. P., & Glossner, J. (2024). Multi-agent adaptive learning for mathematics. _Rivier Academic Journal_, 19(1), Summer 2024. Rivier University.
+Developed the Reactive Chat Interface in reactive_chat_vt.py for real-time agent communication.
+
+Integrated agents, state transitions, group chat management, and frontend UI buttons.
+
+Tested state transitions, message routing, and dynamic career recommendation updates.
 
 
-# Running the Code
 
-Run as a module. It will open up a browser tab in your default browser. 
+# Sprint Objective Summary
 
-Note that as of 1/12/2025, it does not work with Firefox. Use Chrome.
+Sprint | Objective
+Sprint 1 | Build minimum viable agent setup (basic student interaction)
+Sprint 2 | FSM spike: Career progression state transitions
+Sprint 3 | Create working MVP: Panel tabs, UI buttons wired to agents
+Sprint 4 | Improve agent interactions, handle dynamic interest updates
 
-```sh
-(adaptive) user@machine:~/Adaptive-Learning$ python -m src.UI.panel_gui_tabs_jg
-```
+
+
+# User Story
+
+User Story CP1: Career Path Agent Enhancement - *As a student, I want the Career Path Agent to provide personalized career guidance based on my interests and skills, so I can plan my career path and address skill gaps effectively.
+
 
 # Installing Dependencies
 
